@@ -17,9 +17,9 @@
                                         class="fas fa-print"></i>EXCEL</a>
                                         <div style="text-align: left;">
                                         <label>Starting Date</label>
-                                        <input type="date" id="sdate">
+                                        <input type="date" required id="sdate">
                                          <label class="ml-3">Ending Date</label>
-                                        <input type="date" id="edate">
+                                        <input type="date" required id="edate">
                                             <input class="btn btn-primary" onclick="updatetable();" type="submit" value="submit">
                                         </div>
                             </div>
@@ -59,37 +59,44 @@
        {
         var sdata = $("#sdate").val();
         var edata = $("#edate").val();
-        $.ajax({
-            url: "{{url('reportupdate/')}}",
-            type: 'POST',
-            header: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]')},
-            data: {
-                "_token": "{{ csrf_token() }}",
-                "startdate" : sdata,
-                "enddate" : edata
-            },
-            statusCode:{
-            200: function (response) {
-                var html = "";
-                
-                if(response.length > 0)
-                {
-                    $.each(response, (index, value) =>{
-                        html += `<tr><td>${value.id}</td><td>${value.date}</td><td>${value.expense}</td><td>${value.category}</td></tr>`;
-                        });
-                        $('table tbody').append(html)
+        if(sdata == "" && edata == ""){
+            alert('please enter dates');
+          
+        }
+        else{
+
+            $.ajax({
+                url: "{{url('reportupdate/')}}",
+                type: 'POST',
+                header: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]')},
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                    "startdate" : sdata,
+                    "enddate" : edata
+                },
+                statusCode:{
+                200: function (response) {
+                    var html = "";
+                    
+                    if(response.length > 0)
+                    {
+                        $.each(response, (index, value) =>{
+                            html += `<tr><td>${value.id}</td><td>${value.date}</td><td>${value.expense}</td><td>${value.category}</td></tr>`;
+                            });
+                            $('table tbody').append(html)
+                    }
+                    else
+                    {
+                        html += `<tr><td colspan="4">data Not found</td></tr>`; 
+                            $('table tbody').append(html)
+                    }
                 }
-                else
-                {
-                    html += `<tr><td colspan="4">data Not found</td></tr>`; 
-                        $('table tbody').append(html)
+                },
+                error: function (error) {
+                    console.log(error);
                 }
-            }
-            },
-            error: function (error) {
-                console.log(error);
-            }
-            });
+                });
+        }
        }
 
        function exportdetail()

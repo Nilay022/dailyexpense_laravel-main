@@ -87,9 +87,9 @@
     <div class="sidebar">
       <!-- Sidebar user panel (optional) -->
       <div class="user-panel mt-3 pb-3 mb-3 d-flex">
-        <div class="image">
+        {{-- <div class="image">
           <img src="{{ asset('storage/profile/').'/'.\Illuminate\Support\Facades\Auth::user()->profile }}" class="img-circle elevation-2" style="height: 35px !important;  width: 2.5rem !important" alt="User Image">
-        </div>
+        </div> --}}
         <div class="info">
           <a href="#" class="d-block">{{ \Illuminate\Support\Facades\Auth::user()->first_name }}</a>
         </div>
@@ -149,6 +149,18 @@
             </a>
           </li>
 
+       
+
+            <li class="nav-item">
+          <a href="{{route('tour')}}" class="nav-link">
+            <i class="nav-icon fas fa-file"></i>
+            <p>
+              Tour
+             </p>
+
+          </a>
+        </li>
+
            <li class="nav-item">
             <a href="{{route('report')}}" class="nav-link">
               <i class="nav-icon fas fa-file"></i>
@@ -159,6 +171,7 @@
             </a>
           </li>
 
+          
           <li class="nav-header">SETTINGS</li>
           <li class="nav-item">
             <a href="{{route('profile')}}" class="nav-link">

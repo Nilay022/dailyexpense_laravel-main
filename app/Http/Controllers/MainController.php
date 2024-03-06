@@ -7,6 +7,9 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Expense;
 use Illuminate\Support\Facades\DB;
 use App\Models\Categories;
+use App\Models\Contact;
+use App\Models\Tour;
+use App\Models\Tour_member;
 use App\Exports\exportfile;
 use Carbon\Carbon;
 use Maatwebsite\Excel\Facades\Excel;
@@ -31,9 +34,10 @@ class MainController extends Controller {
     }
 
     public function manage() {
+        $category = Categories::where('user_id',Auth::id())->get();
         $expense = Expense::where('user_id', Auth::id())->get();
         $total = DB::table('expenses')->where('user_id', Auth::id())->sum('expense');
-        return view('manage', compact('expense', 'total'));
+        return view('manage', compact('expense', 'total','category'));
     }
 
     public function add() {
@@ -97,9 +101,16 @@ class MainController extends Controller {
         // return redirect()->route('profile')->with('success', 'Profile Update Successfully');
     // }
 
-    public function update(Request $request, $id) {
+    public function expensedata($id)
+    {
         $expense = Expense::find($id);
-        $expense->update(['category' => $request->expensecategory, 'date' => $request->expensedate, 'expense' => $request->expenseamount]);
+        return response()->json($expense);
+
+    }
+
+    public function update(Request $request) {
+        $expense = Expense::find($request->id);
+        $expense->update(['category' => $request->expensecategory, 'date' => $request->expensedate, 'expense' => $request->expenseamount ,'description' => $request->expensedescription]);
         return redirect()->route('manage')->with('success', 'Update Expense Successfully');
     }
 
@@ -157,8 +168,61 @@ class MainController extends Controller {
 
     public function exportdata(Request $request)
     {
-        // return $request->all();
+        // return $request->all();  
         return Excel::download(new exportfile($request), 'users.xlsx');
+    }
+
+    public function tour()
+    {
+        $contact = Contact::where('user_id',Auth::id())->get();
+        $tour = Tour::where('user_id',Auth::id())->get();
+        $tourconut = count($tour);
+        $contactcount = count($contact);
+        return view('tour',compact('contact','tour','tourconut','contactcount'));
+    }
+
+    public function addContact(Request $request)
+    {
+        $contact = Contact::create([
+            'user_id'=>$request->uid,
+            'name'=>$request->cname
+        ]);
+        return redirect()->route('tour')->with('success', 'Add Contact Successfully');
+    }
+
+    public function memberdelete(Request $request, $cid)
+    {
+        $data = Contact::where('cid',$cid)->delete();
+        return redirect()->route('tour')->with('success', 'Delete Member Successfully');
+    }
+    
+    public function addTourMember(Request $request)
+    {
+        $tour = Tour::create([
+            'name'=>$request->cname,
+            'user_id'=>$request->uid
+        ]);
+        if($tour == true)
+        {
+            $mid = $request->membername;
+            for($i = 0; $i < count($mid); $i++)
+            {
+                $rec[$i] = array(
+                    'user_id'=>$request->uid,
+                    'member_id'=>$mid[$i],
+                    'Tour_id'=>$tour->id
+                );
+                Tour_member::insert($rec[$i]);
+            }
+            return redirect()->route('tour')->with('success', 'new Tour Successfully');
+        }
+    }
+
+    public function tourdetail($tdid)
+    {
+        $tname = Tour::where('tid',$tdid)->first();
+        $tour = DB::select('SELECT * FROM `contact` c join tour_members tm on tm.member_id = c.cid where tm.Tour_id = '.$tdid);
+        return view('tourdetail',compact('tour','tname'));
     }
 }
 

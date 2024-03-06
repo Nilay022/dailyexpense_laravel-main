@@ -44,7 +44,7 @@
                                         <td> {{$e->expense}}</td>
                                         <td> {{$e->category}}</td>
                                         <td>
-                                            <a href="{{ route('update', $e->id) }}">Edit</a>&nbsp;
+                                            <a data-toggle="modal" data-target="#addModal" class="text-primary" style="cursor: pointer;" onclick="update_expense({{$e->id}})">Edit</a>&nbsp;
                                             <a href="{{ route('delete', $e->id)}}">Delete</a>
                                         </td>
                                     </tr>
@@ -68,6 +68,51 @@
             </div>
         </div>
 
+<div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addModalLabel">Add Category</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form action="{{route('update')}}" class="mt-3" id="expense" method="POST">
+                @csrf
+
+        <input type="hidden" id="eid" name="id">        
+         <div class="form-group">
+    <label for="EnterAmount">Enter Amount(₹)</label>
+    <input type="number"  class="form-control" id="expenseamount" name="expenseamount" placeholder="Enter Amount">
+  </div>
+  <div class="form-group">
+    <label for="expensedate">Date</label>
+    <input type="date" class="form-control col-sm-12" 
+                                name="expensedate" id="expensedate" required> 
+  </div>
+  <div class="form-group">
+    <label for="exampleFormControlSelect1">Category</label>
+    <select class="form-control" name="expensecategory" id="exampleFormControlSelect1">
+         @foreach ($category as $data)                                    
+             <option>{{$data->name}}</option>
+         @endforeach     
+    </select>
+  </div>
+  <div class="form-group">
+    <label for="Enter Description">Description</label>
+        <div>
+            <input type="text" placeholder="Enter description" class="form-control" id="expensedescription" name="expensedescription"></input>
+        </div>
+  </div>
+  <button type="submit" class="btn btn-primary">Update</button>
+
+            </form>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
     </section>
 
 @endsection
@@ -78,6 +123,25 @@
         @elseif(session()->has('error'))
         swal.fire("Error!", "{{ session()->get('error') }}", "error");
         @endif
+
+        function update_expense(id)
+        {
+            $.ajax({
+                url: "{{url('updateexp/')}}/"+id,
+                type: 'GET',
+                statusCode:{
+
+                    200: function (response) {
+                        $('#eid').val(response.id);
+                        $('#expenseamount').val(response.expense);
+                        $('#expensedate').val(response.date);
+                        $('#exampleFormControlSelect1').val(response.category);
+                        $('#expensedescription').val(response.description);
+                        $('#addModal').modal('show');
+                    }
+                },
+            });
+        }
     </script>
 
 @endsection

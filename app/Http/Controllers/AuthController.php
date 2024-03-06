@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Session;
+use Laravel\Socialite\Facades\Socialite;
 
 class AuthController extends Controller
 {
@@ -50,6 +51,29 @@ return redirect()->route('login')->with('success', 'Register Successfully');
     
             return redirect()->route('login');
         }
+
+    public function loginWithGoogle()
+    {
+         $gUser = Socialite::driver('google')->stateless()->user();
+        $user = User::where('email', $gUser->getEmail())->first();
+        if ($user) {
+            Auth::loginUsingId($user->id, True);
+            return redirect()->route('dashboard');
+        }
+        else {
+            return "Authorized access";
+        }
+    }
+
+    public function redirectToGoogle()
+    {
+        return Socialite::driver('google')->redirect();
+
+    }
+    
+    public function user(Request $request) {
+        return response()->json($request->user());
+    }
     
 }
 
