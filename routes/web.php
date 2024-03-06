@@ -58,5 +58,4 @@ Route::get('/memberdelete/{cid}', [MainController::class, 'memberdelete'])->name
 Route::post('/reportupdate', [MainController::class, 'reportupdate'])->name('reportupdate');
 Route::post('expense/{id}/update', [MainController::class, 'update'])->name('update.store');
 Route::post('exportdata', [MainController::class, 'exportdata'])->name('exportdata');
-
 });
