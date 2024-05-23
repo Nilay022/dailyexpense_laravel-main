@@ -30,11 +30,11 @@
                                   @if(!@empty($data))
                                 @foreach ($data as $e)
                                     <tr>
-                                        <td> {{$e->id}}</td>
+                                        <td> {{$loop->iteration}}</td>
                                         <td> {{$e->name}}</td>
                                         <td> {{$e->limit}}</td>
                                         <td>
-                                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" onclick="openPostModal({{$e->id}})">edit
+                                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" onclick="openPostModal({{$e->id}})">Edit
                                         </button>    
                                         <button class="btn btn-danger"><a href="{{ route('deleteCategory', $e->id)}}" style="color: white;">Delete</a></button>
                                         </td>
@@ -70,6 +70,7 @@
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
+     
       <div class="modal-body">
         <form method="POST" action="{{route('updateCategory')}}">
           @csrf
@@ -108,7 +109,7 @@
           </div>
           <div class="form-group">
             <label for="exampleInputPassword1">Limit</label>
-            <input type="number" class="form-control" name="limitamt" />
+            <input type="text" onkeypress="return (event.charCode !=8 && event.charCode ==0 || ( event.charCode == 46 || (event.charCode >= 48 && event.charCode <= 57)))" class="form-control" name="limitamt" />
           </div>
           <button type="submit" class="btn btn-primary">Add</button>
         </form>

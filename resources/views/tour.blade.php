@@ -50,7 +50,7 @@
                 <div class="icon">
                     <i class="ion ion-plus"></i>
                 </div>
-                <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                <a href="#" type="button" class="btn btn-tool small-box-footer" data-toggle="modal" data-target="#addTour"  >Add Tour <i class="fas fa-arrow-circle-right"></i></a>
             </div>
         </div>
          <div class="container-fluid">
@@ -111,12 +111,12 @@
                         </tr>
                       </thead>
                       <tbody>
-                        @foreach ($tour as $t)
+                        @foreach ($amount as $t)
                        
                         <tr>
-                          <td>{{$t->tid}}</td>
+                          <td>{{$loop->iteration}}</td>
                           <td><a href="{{route('tourdetail',$t->tid)}}" style="color: black">{{$t->name}}</a></td>
-                          <td>15000</td>
+                          <td>{{$t->amount ?? 0}}</td>
                         </tr>
                       
                         @endforeach

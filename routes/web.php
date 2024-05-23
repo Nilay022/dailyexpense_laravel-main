@@ -6,7 +6,7 @@ use App\Http\Controllers\MainController;
 
 
 /*
-|--------------------------------------------------------------------------
+|--------------------------------------------------------------------------    
 | Web Routes
 |--------------------------------------------------------------------------
 |
@@ -40,6 +40,8 @@ Route::get('category', [MainController::class, 'category'])->name('category');
 Route::get('report', [MainController::class, 'report'])->name('report');
 Route::get('tour', [MainController::class, 'tour'])->name('tour');
 Route::get('tourdetail/{id}', [MainController::class, 'tourdetail'])->name('tourdetail');
+Route::post('/Addtourdetail', [MainController::class, 'Addtourdetail'])->name('Addtourdetail');
+Route::get('Deletetourdetail/{id}', [MainController::class, 'Deletetourdetail'])->name('Deletetourdetail');
 Route::get('add', [MainController::class, 'add'])->name('add');
 Route::post('add', [MainController::class, 'addStore'])->name('add.store');
 Route::post('addContact', [MainController::class, 'addContact'])->name('addContact');

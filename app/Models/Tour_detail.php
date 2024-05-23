@@ -8,9 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 class Tour_detail extends Model
 {
      use HasFactory;
+     protected $primaryKey = 'tdid';
     protected $fillable = [
-        'tid',
+        'Tour_id',
         'amount',
+        'date',
         'detail'
 
     ];

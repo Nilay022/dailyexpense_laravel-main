@@ -77,9 +77,9 @@
             <!-- /.col -->
           </div>
         </form>
-  
+        
         <!-- /.social-auth-links -->
-  
+        
         {{-- <p class="mb-1">
           <a href="forgot-password.php">I forgot my password</a>
         </p> --}}
@@ -87,6 +87,9 @@
           If you don't have account!
           <a href="{{ route('register') }}" class="text-center">Register Now</a>
         </p>
+        
+        <a class="btn-block mt-2" href="{{route('login-with-google-redirect')}}">
+          <img class="w-6 h-6" src="https://www.svgrepo.com/show/475656/google-color.svg" loading="lazy" alt="google logo" width="4%"> Continue with Google</a>
       </div>
       <!-- /.login-card-body -->
     </div>

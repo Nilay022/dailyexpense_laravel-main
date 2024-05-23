@@ -10,6 +10,7 @@ use App\Models\Categories;
 use App\Models\Contact;
 use App\Models\Tour;
 use App\Models\Tour_member;
+use App\Models\Tour_detail;
 use App\Exports\exportfile;
 use Carbon\Carbon;
 use Maatwebsite\Excel\Facades\Excel;
@@ -24,13 +25,25 @@ class MainController extends Controller {
     }
 
     public function dashboard(Request $request) {   
+        $today = Carbon::now();
+
         $data = Auth::user();
         $category = Categories::get();
         $lastexp = Expense::latest()->first();
         $exp = Expense::where('user_id',$data->id)->sum('expense'); 
-        $limit = Expense::selectRaw('sum(expense) as expense, category')->groupBy('category')->where('user_id', Auth::id())->get()->toArray();
+        $yearexp = DB::table('expenses')
+                    ->select(
+                    DB::raw('SUM(expense) as total_expense'),
+                    DB::raw('MONTHNAME(date) as month_name'),
+                    DB::raw('YEAR(date) as year')
+                )
+                ->where('user_id',  Auth::id())
+                ->groupBy('year', 'month_name')
+                ->get();
+                $limit = Expense::selectRaw('sum(expense) as expense, category')->whereMonth('date', $today->month)->groupBy('category')->where('user_id', Auth::id())->get()->toArray();
+
         $remain_limit = $data->expense_limit - $exp; 
-        return view('dashboard',compact('remain_limit','category','limit','exp','lastexp'));
+        return view('dashboard',compact('remain_limit','category','limit','exp','lastexp','yearexp'));
     }
 
     public function manage() {
@@ -89,7 +102,8 @@ class MainController extends Controller {
     }
 
    public function profileUpload(Request $request) {
-        return $request->all();
+        // return $request->all();
+        dd($request);
         // $user = Auth::user();
         // if ($request->hasFile('file')) {
         //     $image = $request->file('file');
@@ -143,12 +157,20 @@ class MainController extends Controller {
 
     public function AddCategory(Request $request)
     {   
-        $category = Categories::create([
-            'user_id'=>$request->uid,
-            'name'=>$request->catename,
-            'limit'=>$request->limitamt
-        ]);
-        return redirect()->route('category')->with('success', 'Add Category Successfully');
+        $amt = $request->limitamt;
+        if($amt > Auth::user()->expense_limit)
+        {
+            return redirect()->route('category')->with('message', 'invaild Amount Entered');
+        }
+        else
+        {
+            $category = Categories::create([
+                'user_id'=>$request->uid,
+                'name'=>$request->catename,
+                'limit'=>$request->limitamt
+            ]);
+            return redirect()->route('category')->with('success', 'Add Category Successfully');
+        }
     }
 
     public function report()
@@ -169,16 +191,16 @@ class MainController extends Controller {
     public function exportdata(Request $request)
     {
         // return $request->all();  
-        return Excel::download(new exportfile($request), 'users.xlsx');
+        return view(new exportfile($request), 'users.xlsx');
     }
 
     public function tour()
     {
-        $contact = Contact::where('user_id',Auth::id())->get();
-        $tour = Tour::where('user_id',Auth::id())->get();
-        $tourconut = count($tour);
+        $contact = Contact::where('user_id',Auth::id())->get(); 
+        $amount = DB::select("select tour.user_id,sum(`tour_details`.`amount`) as amount, `tour`.`name`, `tour`.tid as tid from `tour_details` right join `tour` on `tour`.`tid` = `tour_details`.`Tour_id` where tour.user_id = ".Auth::id(). " group by `tour`.`tid`");
+        $tourconut = count($amount);
         $contactcount = count($contact);
-        return view('tour',compact('contact','tour','tourconut','contactcount'));
+        return view('tour',compact('contact','tourconut','contactcount','amount'));
     }
 
     public function addContact(Request $request)
@@ -222,7 +244,25 @@ class MainController extends Controller {
     {
         $tname = Tour::where('tid',$tdid)->first();
         $tour = DB::select('SELECT * FROM `contact` c join tour_members tm on tm.member_id = c.cid where tm.Tour_id = '.$tdid);
-        return view('tourdetail',compact('tour','tname'));
+        $data = Tour_detail::where('tour_id',$tdid)->get();
+        return view('tourdetail',compact('tour','tname','data'));
+    }
+
+    public function Addtourdetail(Request $request)
+    {
+        $data = Tour_detail::updateOrCreate(['tdid' => $request->tdid],[
+            'Tour_id' => $request->tourid,
+            'amount' => $request->amount,
+            'date' => $request->date,
+            'detail' => $request->detail
+        ]);
+        return back();
+    }
+
+    public function Deletetourdetail($tdid)
+    {
+        $data = Tour_detail::where('tdid', $tdid)->delete();
+        return back();
     }
 }
 

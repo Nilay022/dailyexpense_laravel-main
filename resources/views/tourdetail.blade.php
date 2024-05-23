@@ -19,31 +19,38 @@
                     <li class="nav-item">
                       <span class="nav-link">{{$con->name}}</span>
                     </li>
+
                     @endforeach
                   </ul>
                 </div>
               </div>
               <!-- /.card -->
-            </div>
-            
-            <div>
-              <div class="form-group">
-                <label for="exampleInputEmail1">Email address</label>
-                <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
-                <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+               <div>
+              <form action="{{route('Addtourdetail')}}" method="post">
+                            @csrf
+
+                <input type="hidden" name="tdid" id="tdid">    
+                <input type="hidden" name="tourid" id="id" value="{{$tname->tid}}">
+                <div class="form-group">
+                <label for="exampleInputEmail1">Enter date</label>
+                <input type="date" name="date" id="date" class="form-control">
               </div>
               <div class="form-group">
-                <label for="exampleInputPassword1">Password</label>
-                <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+                <label for="exampleInputEmail1">Enter Amount(₹)</label>
+                <input type="text" onkeypress="return (event.charCode !=8 && event.charCode ==0 || ( event.charCode == 46 || (event.charCode >= 48 && event.charCode <= 57)))" class="form-control" id="amount" name="amount" placeholder="Enter Amount">
+              </div>
+              <div class="form-group">
+                <label for="exampleInputPassword1">Details</label>
+                <input type="text" class="form-control" id="detail" required name="detail" placeholder="Enter details">
               </div>
               <div class="form-group form-check">
-                <input type="checkbox" class="form-check-input" id="exampleCheck1">
-                <label class="form-check-label" for="exampleCheck1">Check me out</label>
               </div>
-              <button type="submit" class="btn btn-primary">Submit</button>
+              <button type="submit" class="btn btn-primary">Add</button>
             </form>
-              <form>
             </div>
+            </div>
+            
+           
             
             <div class="content col-12 ">
                   <div class="container-fluid">
@@ -59,15 +66,20 @@
                           </tr>
                           </thead>
                           <tbody>
+                            @foreach ($data as $details)
                               <tr>
-                                  <td>12</td>
-                                  <td>232</td>
-                                  <td>2112</td>
-                                  <td>2323</td>
+                                <td>1</td>
+                                <td>{{$details->date}}</td>
+                                <td>{{$details->amount}}</td>
+                                <td>{{$details->detail}}</td>
+                                <td>
+                                  <a href="#" onclick="updatetourdetail({{$details}});" class="btn btn-primary">Edit</a>
+                                  <a href="{{route('Deletetourdetail',$details->tdid)}}" class="btn btn-danger">Delete</a>
+                                </td>
                               </tr>
+                            @endforeach
                           </tbody>
                       </table>
-                      
                   </div>
                 </div>
             </div>
@@ -75,32 +87,19 @@
   </div>
 </div>
 
-<div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="addModalLabel">Add Category</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <form method="POST" action="{{route('AddCategory')}}">
-          @csrf
-          <input type="hidden" name="uid" value="{{Auth::id()}}" hidden/>
-          <div class="form-group">
-            <label for="exampleInputEmail1">Category</label>
-            <input type="text" class="form-control"  name="catename" aria-describedby="emailHelp" />
-          </div>
-          <div class="form-group">
-            <label for="exampleInputPassword1">Limit</label>
-            <input type="number" class="form-control" name="limitamt" />
-          </div>
-          <button type="submit" class="btn btn-primary">Add</button>
-        </form>
-      </div>
-    </div>
-  </div>
-</div>
+@endsection
 
+@section('js')
+
+<script>
+
+  function updatetourdetail(data)
+  {
+      document.getElementById('tdid').value = data.tdid;
+      document.getElementById('date').value = data.date;
+      document.getElementById('amount').value = data.amount;
+      document.getElementById('detail').value = data.detail;
+      
+  }
+  </script>
 @endsection

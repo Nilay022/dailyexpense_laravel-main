@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Http\Controllers;
-
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
@@ -45,23 +44,29 @@ return redirect()->route('login')->with('success', 'Register Successfully');
         }
     }
     
-        public function logout(){
-            Session::flush();
-            Auth::logout();
-    
-            return redirect()->route('login');
-        }
+    public function logout(){
+        Session::flush();
+        Auth::logout();
+
+        return redirect()->route('login');
+    }
 
     public function loginWithGoogle()
     {
-         $gUser = Socialite::driver('google')->stateless()->user();
+        $gUser = Socialite::driver('google')->stateless()->user();
         $user = User::where('email', $gUser->getEmail())->first();
         if ($user) {
-            Auth::loginUsingId($user->id, True);
+            Auth::login($user, True);
             return redirect()->route('dashboard');
         }
         else {
-            return "Authorized access";
+          $userdata = User::create([
+            'email' => $gUser->getEmail(),
+            'first_name' => $gUser->getName(),
+            'last_name' => $gUser->getName(),
+            ]);
+        Auth::login($userdata, True);
+            return redirect()->route('dashboard');
         }
     }
 
@@ -70,7 +75,7 @@ return redirect()->route('login')->with('success', 'Register Successfully');
         return Socialite::driver('google')->redirect();
 
     }
-    
+
     public function user(Request $request) {
         return response()->json($request->user());
     }

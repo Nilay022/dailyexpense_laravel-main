@@ -11,7 +11,7 @@
 
   <div class="form-group">
     <label for="EnterAmount">Enter Amount(₹)</label>
-    <input input type="number" value="" class="form-control" id="expenseamount" name="expenseamount" placeholder="Enter Amount">
+    <input input type="text" onkeypress="return (event.charCode !=8 && event.charCode ==0 || ( event.charCode == 46 || (event.charCode >= 48 && event.charCode <= 57)))" value="" class="form-control" id="expenseamount" name="expenseamount" placeholder="Enter Amount">
   </div>
   <div class="form-group">
     <label for="expensedate">Date</label>
@@ -32,7 +32,7 @@
             <textarea placeholder="Enter description" class="form-control col-sm-12" name="expensedescription"></textarea>
         </div>
   </div>
-  <button type="submit" name="add" class="btn btn-primary">Submit</button>
+  <button type="submit" name="add" class="btn btn-primary">Add</button>
 </form>
     </div>
 </div>

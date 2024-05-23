@@ -8,20 +8,20 @@
                     <div class="card">
                         <div class="card-header">
                             <h3 class="card-title">Report</h3>
-                                
+                        </div>
+                        <div class="col-12 p-2" style="text-align: right;" >
+                            <div class="float-left">
+                                <label>Starting Date</label>
+                                <input type="date" required id="sdate">
+                                 <label class="ml-3">Ending Date</label>
+                                <input type="date" required id="edate">
+                                    <input class="btn btn-primary ml-2" onclick="updatetable();" type="submit" value="submit">
+
                             </div>
-                            <div class="col-12" style="text-align: right;" >
                                 <a onclick="printDiv('printableArea')" class="btn btn-default"><i
                                         class="fas fa-print"></i> PDF</a>
                                         <a class="btn btn-default export_to_excel" onclick="exportdetail()"><i
                                         class="fas fa-print"></i>EXCEL</a>
-                                        <div style="text-align: left;">
-                                        <label>Starting Date</label>
-                                        <input type="date" required id="sdate">
-                                         <label class="ml-3">Ending Date</label>
-                                        <input type="date" required id="edate">
-                                            <input class="btn btn-primary" onclick="updatetable();" type="submit" value="submit">
-                                        </div>
                             </div>
                         </div>
 

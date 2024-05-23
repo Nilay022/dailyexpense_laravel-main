@@ -30,8 +30,9 @@
                                 <tr class="text-center">
                                     <th>#</th>
                                     <th>Date</th>
-                                    <th>Amount</th>
                                     <th>Expense Category</th>
+                                    <th>Amount</th>
+                                    <th>Description</th>
                                     <th colspan="2">Action</th>
                                 </tr>
                                 </thead>
@@ -39,13 +40,14 @@
                                 @if(!empty($expense))
                                 @foreach ($expense as $e)
                                     <tr>
-                                        <td> {{$e->id}}</td>
+                                        <td> {{$loop->iteration}}</td>
                                         <td> {{$e->date}}</td>
-                                        <td> {{$e->expense}}</td>
                                         <td> {{$e->category}}</td>
+                                        <td> {{$e->expense}}</td>
+                                        <td> {{$e->description}}</td>
                                         <td>
-                                            <a data-toggle="modal" data-target="#addModal" class="text-primary" style="cursor: pointer;" onclick="update_expense({{$e->id}})">Edit</a>&nbsp;
-                                            <a href="{{ route('delete', $e->id)}}">Delete</a>
+                                            <a data-toggle="modal" data-target="#addModal" class="btn btn-primary" style="cursor: pointer; color: white;" onclick="update_expense({{$e->id}})">Edit</a>&nbsp;
+                                            <a href="{{ route('delete', $e->id)}}" class="btn btn-danger">Delete</a>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -63,7 +65,6 @@
                         <!-- /.card-body -->
                     </div>
                     <!-- /.card -->
-
                 </div>
             </div>
         </div>
@@ -88,15 +89,14 @@
   </div>
   <div class="form-group">
     <label for="expensedate">Date</label>
-    <input type="date" class="form-control col-sm-12" 
-                                name="expensedate" id="expensedate" required> 
-  </div>
+    <input type="date" class="form-control col-sm-12" name="expensedate" id="expensedate" required> 
+  </div>                                        
   <div class="form-group">
     <label for="exampleFormControlSelect1">Category</label>
     <select class="form-control" name="expensecategory" id="exampleFormControlSelect1">
-         @foreach ($category as $data)                                    
-             <option>{{$data->name}}</option>
-         @endforeach     
+        @foreach ($category as $data)                                    
+            <option>{{$data->name}}</option>
+        @endforeach     
     </select>
   </div>
   <div class="form-group">
@@ -113,7 +113,7 @@
     </div>
   </div>
 </div>
-    </section>
+</section>
 
 @endsection
 @section('js')

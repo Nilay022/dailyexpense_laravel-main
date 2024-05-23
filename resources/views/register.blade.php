@@ -120,8 +120,7 @@
                     </div>
                 </form>
                 <P class="mt-3">Already have an account! <a href="{{ route('login') }}" class="text-center">Login now</a></P>
-                <a class="btn btn-primary btn-block" href="{{route('login-with-google-redirect')}}"><i class="fa fa-google" aria-hidden="true"></i>
-with Google</a>
+                
             </div>
             <!-- /.form-box -->
         </div><!-- /.card -->

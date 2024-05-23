@@ -17,6 +17,7 @@ class CreateTourDetailsTable extends Migration
             $table->id('tdid');
             $table->foreignId('Tour_id')->references('tid')->on('tour')->onDelete('cascade');
             $table->integer('amount')->default(12);
+            $table->string('date');
             $table->string('detail');
             $table->timestamps();
         });

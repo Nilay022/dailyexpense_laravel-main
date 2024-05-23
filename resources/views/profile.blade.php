@@ -2,27 +2,27 @@
 @section('content')
 
 <div class="container emp-profile">
+    <h1>Profile Information</h1>
     <form class="form" method="post" action="{{ route('profileUpload') }}" enctype='multipart/form-data'>
         {{ csrf_field() }}
         <div class="row">
-            <div class="col-md-4">
-                <div class="profile-img">
+            <div class="col-md-4"> 
+                 <div class="profile-img">
                     <img src="{{ asset('storage/profile/').'/'.$user->profile }}" alt="" width="100" height="100"/>
                         <div class="form-group">
-                            <!-- <label for="exampleFormControlFile1">Example file input</label> -->
-                            {{-- <input type="file" name='file' class="form-control-file mt-3" id="exampleFormControlFile1"> --}}
-                            <input type="file" name="file" id="">
+                             <label for="exampleFormControlFile1">Example file input</label> 
+                            <input type="file" name='file' class="form-control-file mt-3" id="exampleFormControlFile1">
                         </div>
                 </div>
                 <div class="input-group-append">
                     <button class="btn btn-secondary" type="submit" name='but_upload' id="profilepicinput">Upload Picture</button>
                 </div>
-            </div>
+             </div>
         </div>
     </form>
     <form action="{{route('profile.store')}}" method="post">
         @csrf
-        <div class="row">
+        <div class="row mt-5">
             <div class="col-md-8">
                 <div class="tab-content profile-tab" id="myTabContent">
                     <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
